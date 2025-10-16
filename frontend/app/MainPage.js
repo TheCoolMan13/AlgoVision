@@ -1,6 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
+import { bubbleSort } from "../services/sorting&searching/bubble";
+import { mergeSort } from "../services/sorting&searching/merge";
 
 export default function MainPage() {
     // Separate states for each sort
@@ -11,35 +13,45 @@ export default function MainPage() {
 
     const navigation = useNavigation();
 
-    const fetchSort = async (type, setFrames, setCurrent) => {
-        setFrames([]);
-        setCurrent(0);
+    // 🔹 Bubble Sort handler
+    const handleBubbleSort = async () => {
+        setBubbleFrames([]);
+        setBubbleCurrent(0);
         try {
-            const res = await fetch(`http://192.168.1.169:8001/sort/${type}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ array: [5, 3, 8, 1, 2] }),
-            });
-
-            const data = await res.json();
-            setFrames(data.frames || []);
+            const data = await bubbleSort([5, 3, 8, 1, 2]);
+            setBubbleFrames(data.frames || []);
         } catch (err) {
-            console.error(`Fetch ${type} failed:`, err);
+            console.error("Bubble Sort failed:", err);
         }
     };
 
-    // Animate Bubble Sort
+    // 🔹 Merge Sort handler
+    const handleMergeSort = async () => {
+        setMergeFrames([]);
+        setMergeCurrent(0);
+        try {
+            const data = await mergeSort([5, 3, 8, 1, 2]);
+            setMergeFrames(data.frames || []);
+        } catch (err) {
+            console.error("Merge Sort failed:", err);
+        }
+    };
+
+    // 🔹 Animate Bubble Sort
     useEffect(() => {
         if (bubbleFrames.length && bubbleCurrent < bubbleFrames.length - 1) {
-            const timer = setTimeout(() => setBubbleCurrent(bubbleCurrent + 1), 400);
+            const timer = setTimeout(
+                () => setBubbleCurrent((prev) => prev + 1),
+                400
+            );
             return () => clearTimeout(timer);
         }
     }, [bubbleFrames, bubbleCurrent]);
 
-    // Animate Merge Sort
+    // 🔹 Animate Merge Sort
     useEffect(() => {
         if (mergeFrames.length && mergeCurrent < mergeFrames.length - 1) {
-            const timer = setTimeout(() => setMergeCurrent(mergeCurrent + 1), 400);
+            const timer = setTimeout(() => setMergeCurrent((prev) => prev + 1), 400);
             return () => clearTimeout(timer);
         }
     }, [mergeFrames, mergeCurrent]);
@@ -52,15 +64,11 @@ export default function MainPage() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>🧠 AlgoVision</Text>
-      
-            {/* Bubble Sort */}
+
+            {/* 🔵 Bubble Sort Section */}
             <View style={styles.section}>
                 <Text style={styles.sortTitle}>Bubble Sort</Text>
-                <Button
-                    title="Star Bubble Sort"
-                    color="#007AFF"
-                    onPress={() => fetchSort("bubble", setBubbleFrames, setBubbleCurrent)}
-                />
+                <Button title="Start Bubble Sort" color="#007AFF" onPress={handleBubbleSort} />
                 <View style={styles.barContainer}>
                     {bubbleArr.map((v, i) => (
                         <View
@@ -78,22 +86,19 @@ export default function MainPage() {
                     ))}
                 </View>
             </View>
+
             <View style={styles.section}>
                 <Button
-                    title="Navigate to bubble sort page"
+                    title="Navigate to Bubble Sort Page"
                     color="green"
-                    onPress={() => navigation.navigate('BubbleSortPage')}
+                    onPress={() => navigation.navigate("BubbleSortPage")}
                 />
             </View>
 
-            {/* Merge Sort */}
+            {/* 🟢 Merge Sort Section */}
             <View style={styles.section}>
                 <Text style={styles.sortTitle}>Merge Sort</Text>
-                <Button
-                    title="Start Merge Sort"
-                    color="#34C759"
-                    onPress={() => fetchSort("merge", setMergeFrames, setMergeCurrent)}
-                />
+                <Button title="Start Merge Sort" color="#34C759" onPress={handleMergeSort} />
                 <View style={styles.barContainer}>
                     {mergeArr.map((v, i) => (
                         <View
