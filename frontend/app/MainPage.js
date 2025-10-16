@@ -1,154 +1,104 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { bubbleSort } from "../services/sorting&searching/bubble";
-import { mergeSort } from "../services/sorting&searching/merge";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function MainPage() {
-    // Separate states for each sort
-    const [bubbleFrames, setBubbleFrames] = useState([]);
-    const [mergeFrames, setMergeFrames] = useState([]);
-    const [bubbleCurrent, setBubbleCurrent] = useState(0);
-    const [mergeCurrent, setMergeCurrent] = useState(0);
-
     const navigation = useNavigation();
 
-    // 🔹 Bubble Sort handler
-    const handleBubbleSort = async () => {
-        setBubbleFrames([]);
-        setBubbleCurrent(0);
-        try {
-            const data = await bubbleSort([5, 3, 8, 1, 2]);
-            setBubbleFrames(data.frames || []);
-        } catch (err) {
-            console.error("Bubble Sort failed:", err);
-        }
-    };
-
-    // 🔹 Merge Sort handler
-    const handleMergeSort = async () => {
-        setMergeFrames([]);
-        setMergeCurrent(0);
-        try {
-            const data = await mergeSort([5, 3, 8, 1, 2]);
-            setMergeFrames(data.frames || []);
-        } catch (err) {
-            console.error("Merge Sort failed:", err);
-        }
-    };
-
-    // 🔹 Animate Bubble Sort
-    useEffect(() => {
-        if (bubbleFrames.length && bubbleCurrent < bubbleFrames.length - 1) {
-            const timer = setTimeout(
-                () => setBubbleCurrent((prev) => prev + 1),
-                400
-            );
-            return () => clearTimeout(timer);
-        }
-    }, [bubbleFrames, bubbleCurrent]);
-
-    // 🔹 Animate Merge Sort
-    useEffect(() => {
-        if (mergeFrames.length && mergeCurrent < mergeFrames.length - 1) {
-            const timer = setTimeout(() => setMergeCurrent((prev) => prev + 1), 400);
-            return () => clearTimeout(timer);
-        }
-    }, [mergeFrames, mergeCurrent]);
-
-    const bubbleArr = bubbleFrames[bubbleCurrent]?.array || [];
-    const bubbleHighlight = bubbleFrames[bubbleCurrent]?.highlight || [];
-    const mergeArr = mergeFrames[mergeCurrent]?.array || [];
-    const mergeHighlight = mergeFrames[mergeCurrent]?.highlight || [];
-
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center" }}>
+            {/* Header / Info Section */}
             <Text style={styles.title}>🧠 AlgoVision</Text>
+            <Text style={styles.infoText}>
+                Welcome to AlgoVision! This app helps you visualize how sorting algorithms work.
+                Click any algorithm below to see step-by-step animations and understand how each
+                element moves in real time.
+            </Text>
 
-            {/* 🔵 Bubble Sort Section */}
+            {/* Bubble Sort */}
             <View style={styles.section}>
                 <Text style={styles.sortTitle}>Bubble Sort</Text>
-                <Button title="Start Bubble Sort" color="#007AFF" onPress={handleBubbleSort} />
-                <View style={styles.barContainer}>
-                    {bubbleArr.map((v, i) => (
-                        <View
-                            key={i}
-                            style={{
-                                width: 30,
-                                height: v * 25,
-                                marginHorizontal: 4,
-                                borderRadius: 6,
-                                backgroundColor: bubbleHighlight.includes(i)
-                                    ? "#FF3B30"
-                                    : "#0A84FF",
-                            }}
-                        />
-                    ))}
-                </View>
-            </View>
-
-            <View style={styles.section}>
-                <Button
-                    title="Navigate to Bubble Sort Page"
-                    color="green"
+                <Text style={styles.sortInfo}>
+                    Bubble Sort repeatedly swaps adjacent elements if they are in the wrong order.
+                    It is simple but not very efficient for large arrays.
+                </Text>
+                <TouchableOpacity
+                    style={[styles.sortButton, { backgroundColor: "#007AFF" }]}
                     onPress={() => navigation.navigate("BubbleSortPage")}
-                />
+                >
+                    <Text style={styles.sortButtonText}>Go to Bubble Sort</Text>
+                </TouchableOpacity>
             </View>
 
-            {/* 🟢 Merge Sort Section */}
+            {/* Merge Sort */}
             <View style={styles.section}>
                 <Text style={styles.sortTitle}>Merge Sort</Text>
-                <Button title="Start Merge Sort" color="#34C759" onPress={handleMergeSort} />
-                <View style={styles.barContainer}>
-                    {mergeArr.map((v, i) => (
-                        <View
-                            key={i}
-                            style={{
-                                width: 30,
-                                height: v * 25,
-                                marginHorizontal: 4,
-                                borderRadius: 6,
-                                backgroundColor: mergeHighlight.includes(i)
-                                    ? "#FFD60A"
-                                    : "#32D74B",
-                            }}
-                        />
-                    ))}
-                </View>
+                <Text style={styles.sortInfo}>
+                    Merge Sort divides the array into halves, sorts them recursively, and then merges
+                    them back together. It is much faster for large arrays.
+                </Text>
+                <TouchableOpacity
+                    style={[styles.sortButton, { backgroundColor: "#34C759" }]}
+                    onPress={() => navigation.navigate("MergeSortPage")}
+                >
+                    <Text style={styles.sortButtonText}>Go to Merge Sort</Text>
+                </TouchableOpacity>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#1C1C1E",
-        justifyContent: "center",
-        alignItems: "center",
+        backgroundColor: "#F2F2F7",
+        paddingTop: 60,
     },
     title: {
-        color: "white",
         fontSize: 28,
         fontWeight: "bold",
-        marginBottom: 30,
+        color: "#1C1C1E",
+        marginBottom: 20,
+        textAlign: "center",
     },
-    section: {
-        alignItems: "center",
+    infoText: {
+        fontSize: 16,
+        color: "#3C3C4399",
+        textAlign: "center",
+        paddingHorizontal: 20,
         marginBottom: 40,
     },
-    sortTitle: {
-        color: "white",
-        fontSize: 20,
-        marginBottom: 10,
+    section: {
+        width: "90%",
+        alignItems: "center",
+        marginBottom: 40,
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
     },
-    barContainer: {
-        flexDirection: "row",
-        alignItems: "flex-end",
-        marginTop: 20,
-        height: 200,
-        backgroundColor: "#2C2C2E",
-        borderRadius: 10,
-        paddingHorizontal: 10,
+    sortTitle: {
+        fontSize: 22,
+        fontWeight: "bold",
+        marginBottom: 10,
+        color: "#1C1C1E",
+    },
+    sortInfo: {
+        fontSize: 14,
+        color: "#3C3C4399",
+        textAlign: "center",
+        marginBottom: 20,
+    },
+    sortButton: {
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 25,
+    },
+    sortButtonText: {
+        color: "white",
+        fontWeight: "bold",
+        fontSize: 16,
     },
 });

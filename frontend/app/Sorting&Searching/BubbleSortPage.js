@@ -1,22 +1,197 @@
-import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { bubbleSort } from "../../services/sorting&searching/bubble";
 
 const BubbleSortPage = () => {
-    
+    const navigation = useNavigation();
+
+    const [bubbleFrames, setBubbleFrames] = useState([]);
+    const [bubbleCurrent, setBubbleCurrent] = useState(0);
+    const [inputArray, setInputArray] = useState("5,3,8,1,2");
+
+    const MAX_BAR_HEIGHT = 200;
+
+    const handleBubbleSort = async () => {
+        let arr;
+        try {
+            arr = inputArray.split(",").map((n) => parseInt(n.trim()));
+            if (arr.some(isNaN)) throw new Error("Invalid number");
+        } catch {
+            Alert.alert("Error", "Please enter a valid comma-separated array of numbers.");
+            return;
+        }
+
+        setBubbleFrames([]);
+        setBubbleCurrent(0);
+        try {
+            const data = await bubbleSort(arr);
+            setBubbleFrames(data.frames || []);
+        } catch (err) {
+            console.error("Bubble Sort failed:", err);
+        }
+    };
+
+    useEffect(() => {
+        if (bubbleFrames.length && bubbleCurrent < bubbleFrames.length - 1) {
+            const timer = setTimeout(() => setBubbleCurrent((prev) => prev + 1), 400);
+            return () => clearTimeout(timer);
+        }
+    }, [bubbleFrames, bubbleCurrent]);
+
+    const bubbleArr = bubbleFrames[bubbleCurrent]?.array || [];
+    const bubbleHighlight = bubbleFrames[bubbleCurrent]?.highlight || [];
+
+    const maxValue = Math.max(...bubbleArr, 1);
+    const scale = MAX_BAR_HEIGHT / maxValue;
 
     return (
-        <View style={styles.container}>
-        <Text> Azi e luni </Text>
-        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {/* Header */}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Text style={styles.backText}>⬅ Back</Text>
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Bubble Sort</Text>
+            </View>
+
+            {/* Info Section */}
+            <View style={styles.infoSection}>
+                <Text style={styles.sortInfo}>
+                    Bubble Sort is a simple sorting algorithm that repeatedly steps through the list,
+                    compares adjacent elements and swaps them if they are in the wrong order.
+                    It is great for learning how sorting works, but not efficient for large datasets.
+                </Text>
+            </View>
+
+            {/* Bars Section */}
+            <View style={styles.section}>
+                <TouchableOpacity style={styles.sortButton} onPress={handleBubbleSort}>
+                    <Text style={styles.sortButtonText}>Start Bubble Sort</Text>
+                </TouchableOpacity>
+
+                <View style={[styles.barContainer, { minHeight: MAX_BAR_HEIGHT }]}>
+                    {bubbleArr.map((v, i) => (
+                        <View key={i} style={{ alignItems: "center", marginHorizontal: 6 }}>
+                            <View
+                                style={{
+                                    width: 30,
+                                    height: v * scale,
+                                    borderRadius: 6,
+                                    backgroundColor: bubbleHighlight.includes(i) ? "#FF3B30" : "#007AFF",
+                                }}
+                            />
+                            <Text style={styles.barNumber}>{v}</Text>
+                        </View>
+                    ))}
+                </View>
+            </View>
+
+            {/* Input Section */}
+            <View style={styles.inputSection}>
+                <Text style={styles.inputLabel}>Enter numbers (comma separated):</Text>
+                <TextInput
+                    style={styles.input}
+                    value={inputArray}
+                    onChangeText={setInputArray}
+                    placeholder="e.g. 5,3,8,1,2"
+                    keyboardType="numeric"
+                />
+            </View>
+        </ScrollView>
     );
 };
-export default BubbleSortPage
+
+export default BubbleSortPage;
 
 const styles = StyleSheet.create({
-    container: {
-        flex : 1,
-        backgrondcolor : "blue",
-        justifyConstent : "center",
+    scrollContainer: {
+        flexGrow: 1,
+        backgroundColor: "#F2F2F7",
         alignItems: "center",
+        paddingTop: 60,
+        paddingBottom: 40,
+    },
+    header: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 20,
+        paddingHorizontal: 20,
+    },
+    backButton: {
+        padding: 10,
+        marginRight: 10,
+    },
+    backText: {
+        color: "#007AFF",
+        fontSize: 16,
+    },
+    headerTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "#1C1C1E",
+    },
+    infoSection: {
+        paddingHorizontal: 20,
+        marginBottom: 30,
+    },
+    sortInfo: {
+        fontSize: 16,
+        color: "#1C1C1E",
+        textAlign: "center",
+        lineHeight: 22,
+    },
+    section: {
+        alignItems: "center",
+        marginBottom: 30,
+    },
+    sortButton: {
+        backgroundColor: "#007AFF",
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 25,
+        marginBottom: 20,
+        elevation: 2,
+    },
+    sortButtonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    barContainer: {
+        flexDirection: "row",
+        alignItems: "flex-end",
+        backgroundColor: "#E5E5EA",
+        borderRadius: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+    },
+    barNumber: {
+        marginTop: 4,
+        fontSize: 14,
+        color: "#1C1C1E",
+        fontWeight: "bold",
+    },
+    inputSection: {
+        width: "90%",
+        marginTop: 20,
+        alignItems: "center",
+    },
+    inputLabel: {
+        fontSize: 16,
+        marginBottom: 8,
+        color: "#1C1C1E",
+    },
+    input: {
+        width: "100%",
+        borderWidth: 1,
+        borderColor: "#C7C7CC",
+        borderRadius: 8,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        fontSize: 16,
+        backgroundColor: "white",
     },
 });
