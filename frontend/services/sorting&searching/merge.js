@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.1.169:8001"; // same as above
+const API_URL = "http://localhost:8001"; // same as above
 
 export const mergeSort = async (array) => {
     try {

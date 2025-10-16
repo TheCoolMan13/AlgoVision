@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.1.169:8001"; // or localhost:8001 if testing locally
+const API_URL = "http://localhost:8001"; // or localhost:8001 if testing locally
 
 export const bubbleSort = async (array) => {
     try {
