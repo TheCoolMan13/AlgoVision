@@ -1,47 +1,75 @@
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Dimensions,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
+
+const { width } = Dimensions.get("window");
+const CARD_WIDTH = width / 2 - 30;
 
 export default function MainPage() {
     const navigation = useNavigation();
 
+    // 🔹 Default image (used when a category doesn't have its own)
+    const defaultImage = require("../assets/default.png");
+
+    const categories = [
+        {
+            title: "Sorting Algorithms",
+            image: require("../assets/sorting.png"),
+            navigateTo: "SortingMainPage",
+        },
+        {
+            title: "Data Structure Visuals",
+            image: require("../assets/datastructure.png"),
+            navigateTo: "DataStructureVisualsMainPage",
+        },
+        {
+            title: "Graph & Pathfinding",
+            image: require("../assets/graph.png"),
+            navigateTo: "GraphnPathfindingMainPage",
+        },
+        {
+            title: "Searching Algorithms",
+            // intentionally missing image to test default
+            navigateTo: "SearchingMainPage",
+        },
+        {
+            title: "Recursion Algorithms",
+            image: require("../assets/recursion.png"),
+            navigateTo: "RecursionMainPage",
+        },
+    ];
+
     return (
         <ScrollView style={styles.container} contentContainerStyle={{ alignItems: "center" }}>
-            {/* Header / Info Section */}
             <Text style={styles.title}>🧠 AlgoVision</Text>
             <Text style={styles.infoText}>
-                Welcome to AlgoVision! This app helps you visualize how sorting algorithms work.
-                Click any algorithm below to see step-by-step animations and understand how each
-                element moves in real time.
+                Welcome to AlgoVision! Explore algorithm visualizations designed to help you
+                understand how data structures and logic interact in real time.
             </Text>
 
-            {/* Bubble Sort */}
-            <View style={styles.section}>
-                <Text style={styles.sortTitle}>Bubble Sort</Text>
-                <Text style={styles.sortInfo}>
-                    Bubble Sort repeatedly swaps adjacent elements if they are in the wrong order.
-                    It is simple but not very efficient for large arrays.
-                </Text>
-                <TouchableOpacity
-                    style={[styles.sortButton, { backgroundColor: "#007AFF" }]}
-                    onPress={() => navigation.navigate("BubbleSortPage")}
-                >
-                    <Text style={styles.sortButtonText}>Go to Bubble Sort</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* Merge Sort */}
-            <View style={styles.section}>
-                <Text style={styles.sortTitle}>Merge Sort</Text>
-                <Text style={styles.sortInfo}>
-                    Merge Sort divides the array into halves, sorts them recursively, and then merges
-                    them back together. It is much faster for large arrays.
-                </Text>
-                <TouchableOpacity
-                    style={[styles.sortButton, { backgroundColor: "#34C759" }]}
-                    onPress={() => navigation.navigate("MergeSortPage")}
-                >
-                    <Text style={styles.sortButtonText}>Go to Merge Sort</Text>
-                </TouchableOpacity>
+            <View style={styles.grid}>
+                {categories.map((item, index) => (
+                    <TouchableOpacity
+                        key={index}
+                        style={styles.card}
+                        onPress={() => navigation.navigate(item.navigateTo)}
+                        activeOpacity={0.85}
+                    >
+                        <Image
+                            source={item.image ? item.image : defaultImage}
+                            style={styles.image}
+                            resizeMode="contain"
+                        />
+                        <Text style={styles.cardTitle}>{item.title}</Text>
+                    </TouchableOpacity>
+                ))}
             </View>
         </ScrollView>
     );
@@ -65,40 +93,36 @@ const styles = StyleSheet.create({
         color: "#3C3C4399",
         textAlign: "center",
         paddingHorizontal: 20,
+        marginBottom: 30,
+    },
+    grid: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        gap: 15,
         marginBottom: 40,
     },
-    section: {
-        width: "90%",
+    card: {
+        width: CARD_WIDTH,
+        backgroundColor: "#E5E5EA",
+        borderRadius: 16,
+        padding: 15,
         alignItems: "center",
-        marginBottom: 40,
-        backgroundColor: "white",
-        padding: 20,
-        borderRadius: 12,
+        justifyContent: "center",
         shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 3,
     },
-    sortTitle: {
-        fontSize: 22,
-        fontWeight: "bold",
+    image: {
+        width: 70,
+        height: 70,
         marginBottom: 10,
+    },
+    cardTitle: {
+        fontSize: 15,
+        fontWeight: "600",
         color: "#1C1C1E",
-    },
-    sortInfo: {
-        fontSize: 14,
-        color: "#3C3C4399",
         textAlign: "center",
-        marginBottom: 20,
-    },
-    sortButton: {
-        paddingVertical: 12,
-        paddingHorizontal: 30,
-        borderRadius: 25,
-    },
-    sortButtonText: {
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 16,
     },
 });
