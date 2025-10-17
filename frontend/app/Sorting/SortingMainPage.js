@@ -10,7 +10,7 @@ const SortingMainPage = () => {
                             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                                 <Text style={styles.backText}>⬅ Back</Text>
                             </TouchableOpacity>
-                            <Text style={styles.headerTitle}>Bubble Sort</Text>
+
                         </View>
             <Text style={styles.title}>Sorting Algorithms</Text>
             <Text style={styles.infoText}>

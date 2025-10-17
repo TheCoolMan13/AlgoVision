@@ -1,17 +1,36 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const DataStructureVisualsMainPage = () => {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
+              <View style={styles.header}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                            <Text style={styles.backText}>⬅ Back</Text>
+                        </TouchableOpacity>
+                    </View>
             <Text style={styles.title}>Data Structure Algorithms</Text>
         </View>
     );
 };
 export default DataStructureVisualsMainPage;
 const styles = StyleSheet.create({
+    backButton: {
+        padding: 10,
+        marginRight: 10,
+    },
+    backText: {
+        color: "#007AFF",
+        fontSize: 16,
+    },
+    header: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 20,
+        paddingHorizontal: 20,
+    },
     container: {
         flex: 1,
         backgroundColor: "#F2F2F7",
