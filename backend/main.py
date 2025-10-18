@@ -39,6 +39,20 @@ def sort_bubble(req: SortRequest):
     frames = list(bubble_sort(req.array))
     return {"frames": frames}
 
+@app.post("/sort/quick")
+def sort_quick(req: SortRequest):
+    frames = list(quick_sort(req.array))
+    return {"frames": frames}
+
+@app.post("/sort/heap")
+def sort_heap(req: SortRequest):
+    frames = list(heap_sort(req.array))
+    return {"frames": frames}
+
+@app.post("/sort/insertion")
+def sort_insertion(req: SortRequest):
+    frames = list(insertion_sort(req.array))
+    return {"frames": frames}
 
 #searching endpoints 
 
