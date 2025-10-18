@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#F2F2F7",
         paddingTop: 60,
+        
     },
     title: {
         fontSize: 28,
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
     card: {
         width: CARD_WIDTH,
         backgroundColor: "#E5E5EA",
-        borderRadius: 16,
+        borderRadius: 12,
         padding: 15,
         alignItems: "center",
         justifyContent: "center",

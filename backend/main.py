@@ -6,7 +6,9 @@ from typing import List
 
 from algorithms.sorting.bubble_sort import bubble_sort
 from algorithms.sorting.merge_sort import merge_sort
-
+from algorithms.sorting.quick_sort import quick_sort
+from algorithms.sorting.heap_sort import heap_sort
+from algorithms.sorting.insertion_sort import insertion_sort
 
 
 from algorithms.searching.linear_search import linear_search

@@ -1,228 +1,197 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-
-const MAX_BAR_HEIGHT = 150;
+import { useEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { mergeSort } from "../../services/sorting/merge";
 
 const MergeSortPage = () => {
     const navigation = useNavigation();
-    const [array, setArray] = useState([38, 27, 43, 10]); // default array
-    const [input, setInput] = useState("38,27,43,10");
-    const [phase, setPhase] = useState(""); // "divide" or "merge"
-    const [steps, setSteps] = useState([]);
-    const [currentStep, setCurrentStep] = useState(0);
 
-    // Convert string input to array
-    const handleInputChange = () => {
-        const newArr = input.split(",").map((x) => parseInt(x.trim())).filter((x) => !isNaN(x));
-        setArray(newArr);
-        setPhase("");
-        setSteps([]);
-        setCurrentStep(0);
+    const [mergeFrames, setMergeFrames] = useState([]);
+    const [mergeCurrent, setMergeCurrent] = useState(0);
+    const [inputArray, setInputArray] = useState("5,3,8,1,2,4,7,6,9,25,21,15,12,11,14,13,10,18,17,16,19,20,22,23,24");
+
+    const MAX_BAR_HEIGHT = 200;
+
+    const handleMergeSort = async () => {
+        let arr;
+        try {
+            arr = inputArray.split(",").map((n) => parseInt(n.trim()));
+            if (arr.some(isNaN)) throw new Error("Invalid number");
+        } catch {
+            Alert.alert("Error", "Please enter a valid comma-separated array of numbers.");
+            return;
+        }
+
+        setMergeFrames([]);
+        setMergeCurrent(0);
+
+        try {
+            const data = await mergeSort(arr);
+            setMergeFrames(data.frames || []);
+        } catch (err) {
+            console.error("Merge Sort failed:", err);
+        }
     };
 
-    // Generate divide steps recursively
-    const generateDivideSteps = (arr) => {
-        const result = [];
-        const divide = (subArr) => {
-            if (subArr.length <= 1) return [subArr];
-            const mid = Math.floor(subArr.length / 2);
-            const left = subArr.slice(0, mid);
-            const right = subArr.slice(mid);
-            result.push([...left, "|", ...right]);
-            divide(left);
-            divide(right);
-            return result;
-        };
-        divide(arr);
-        return result;
-    };
+    useEffect(() => {
+        if (mergeFrames.length && mergeCurrent < mergeFrames.length - 1) {
+            const timer = setTimeout(() => setMergeCurrent((prev) => prev + 1), 400);
+            return () => clearTimeout(timer);
+        }
+    }, [mergeFrames, mergeCurrent]);
 
-    // Generate merge steps recursively
-    const generateMergeSteps = (arr) => {
-        const result = [];
-        const mergeSort = (subArr) => {
-            if (subArr.length <= 1) return subArr;
-            const mid = Math.floor(subArr.length / 2);
-            const left = mergeSort(subArr.slice(0, mid));
-            const right = mergeSort(subArr.slice(mid));
-            const merged = [];
-            let i = 0, j = 0;
-            while (i < left.length && j < right.length) {
-                if (left[i] < right[j]) merged.push(left[i++]);
-                else merged.push(right[j++]);
-            }
-            while (i < left.length) merged.push(left[i++]);
-            while (j < right.length) merged.push(right[j++]);
-            result.push([...merged]); // save current merged array
-            return merged;
-        };
-        mergeSort(arr);
-        return result;
-    };
+    const mergeArr = mergeFrames[mergeCurrent]?.array || [];
+    const mergeHighlight = mergeFrames[mergeCurrent]?.highlight || [];
 
-    const handlePhase = (p) => {
-        setPhase(p);
-        setCurrentStep(0);
-        if (p === "divide") setSteps(generateDivideSteps(array));
-        else if (p === "merge") setSteps(generateMergeSteps(array));
-    };
-
-    const handleNext = () => {
-        if (currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
-    };
-
-    const handlePrev = () => {
-        if (currentStep > 0) setCurrentStep(currentStep - 1);
-    };
+    const maxValue = Math.max(...mergeArr, 1);
+    const scale = MAX_BAR_HEIGHT / maxValue;
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Text style={styles.backText}>⬅ Back</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Merge Sort Visualizer</Text>
+                <Text style={styles.headerTitle}>Merge Sort</Text>
             </View>
 
-            {/* User input */}
-            <TextInput
-                style={styles.input}
-                value={input}
-                onChangeText={setInput}
-                placeholder="Enter numbers separated by commas"
-            />
-            <TouchableOpacity style={styles.phaseButton} onPress={handleInputChange}>
-                <Text style={styles.phaseButtonText}>Update Array</Text>
-            </TouchableOpacity>
-
-            {/* Phase buttons */}
-            <View style={styles.buttonRow}>
-                <TouchableOpacity style={styles.phaseButton} onPress={() => handlePhase("divide")}>
-                    <Text style={styles.phaseButtonText}>See Divide Phase</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.phaseButton} onPress={() => handlePhase("merge")}>
-                    <Text style={styles.phaseButtonText}>See Merge Phase</Text>
-                </TouchableOpacity>
+            {/* Info Section */}
+            <View style={styles.infoSection}>
+                <Text style={styles.sortInfo}>
+                    Merge Sort is a divide-and-conquer algorithm that splits the array into halves,
+                    recursively sorts them, and merges the sorted halves. It is efficient and stable,
+                    making it great for large datasets.
+                </Text>
             </View>
 
-            {/* Step navigation */}
-            {phase !== "" && (
-                <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.navButton} onPress={handlePrev}>
-                        <Text style={styles.navButtonText}>⬅ Previous</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.stepText}>
-                        Step {currentStep + 1} / {steps.length}
-                    </Text>
-                    <TouchableOpacity style={styles.navButton} onPress={handleNext}>
-                        <Text style={styles.navButtonText}>Next ➡</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
+            {/* Bars Section */}
+            <View style={styles.section}>
+                <TouchableOpacity style={styles.sortButton} onPress={handleMergeSort}>
+                    <Text style={styles.sortButtonText}>Start Merge Sort</Text>
+                </TouchableOpacity>
 
-            {/* Original bar representation */}
-            <View style={styles.barContainer}>
-                {array.map((v, i) => {
-                    const height = (v / Math.max(...array)) * MAX_BAR_HEIGHT || 20;
-                    return (
-                        <View key={i} style={{ alignItems: "center" }}>
-                            <View style={{ width: 30, height, marginHorizontal: 6, borderRadius: 6, backgroundColor: "#32D74B" }} />
+                <View style={[styles.barContainer, { minHeight: MAX_BAR_HEIGHT }]}>
+                    {mergeArr.map((v, i) => (
+                        <View key={i} style={{ alignItems: "center", marginHorizontal: 6 }}>
+                            <View
+                                style={{
+                                    width: 30,
+                                    height: v * scale,
+                                    borderRadius: 6,
+                                    backgroundColor: mergeHighlight.includes(i) ? "#FF3B30" : "#007AFF",
+                                }}
+                            />
                             <Text style={styles.barNumber}>{v}</Text>
                         </View>
-                    );
-                })}
+                    ))}
+                </View>
             </View>
 
-            {/* Visualization */}
-            {phase !== "" && (
-                <ScrollView horizontal showsHorizontalScrollIndicator style={styles.scroll}>
-                    <View style={styles.stepContainer}>
-                        {steps[currentStep].map((num, idx) => (
-                            <View key={idx} style={{ alignItems: "center", marginHorizontal: 5 }}>
-                                {num !== "|" ? (
-                                    <>
-                                        <View
-                                            style={{
-                                                height: (num / Math.max(...array)) * MAX_BAR_HEIGHT || 20,
-                                                width: 30,
-                                                backgroundColor: "#FFD60A",
-                                                borderRadius: 5,
-                                                marginBottom: 5,
-                                            }}
-                                        />
-                                        <Text>{num}</Text>
-                                    </>
-                                ) : (
-                                    <Text style={{ fontSize: 24, marginHorizontal: 5 }}>|</Text>
-                                )}
-                            </View>
-                        ))}
-                    </View>
-                </ScrollView>
-            )}
-        </View>
+            {/* Input Section */}
+            <View style={styles.inputSection}>
+                <Text style={styles.inputLabel}>Enter numbers (comma separated):</Text>
+                <TextInput
+                    style={styles.input}
+                    value={inputArray}
+                    onChangeText={setInputArray}
+                    placeholder="e.g. 5,3,8,1,2"
+                    keyboardType="numeric"
+                />
+            </View>
+        </ScrollView>
     );
 };
 
 export default MergeSortPage;
 
-// Only updated styles and minor layout tweaks
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#F2F2F7", paddingTop: 60, alignItems: "center" },
-    header: { width: "100%", flexDirection: "row", alignItems: "center", marginBottom: 20, paddingHorizontal: 20 },
-    backButton: { padding: 10, marginRight: 10 },
-    backText: { color: "#34C759", fontSize: 16 },
-    headerTitle: { fontSize: 24, fontWeight: "bold", color: "#1C1C1E" },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        padding: 8,
-        width: "80%",
-        borderRadius: 8,
-        marginBottom: 10,
+    scrollContainer: {
+        flexGrow: 1,
+        backgroundColor: "#F2F2F7",
+        alignItems: "center",
+        paddingTop: 60,
+        paddingBottom: 40,
+    },
+    header: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 20,
+        paddingHorizontal: 20,
+    },
+    backButton: {
+        padding: 10,
+        marginRight: 10,
+    },
+    backText: {
+        color: "#007AFF",
+        fontSize: 16,
+    },
+    headerTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "#1C1C1E",
+    },
+    infoSection: {
+        paddingHorizontal: 20,
+        marginBottom: 30,
+    },
+    sortInfo: {
+        fontSize: 16,
+        color: "#1C1C1E",
         textAlign: "center",
+        lineHeight: 22,
     },
-    buttonRow: { flexDirection: "row", alignItems: "center", marginVertical: 10, flexWrap: "wrap", justifyContent: "center" },
-    phaseButton: {
-        backgroundColor: "#34C759",
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        marginHorizontal: 5,
-        marginVertical: 5,
+    section: {
+        alignItems: "center",
+        marginBottom: 30,
     },
-    phaseButtonText: { color: "white", fontWeight: "bold", textAlign: "center" },
-    navButton: {
-        backgroundColor: "#0A84FF",
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        marginHorizontal: 5,
+    sortButton: {
+        backgroundColor: "#007AFF",
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 25,
+        marginBottom: 20,
+        elevation: 2,
     },
-    navButtonText: { color: "white", fontWeight: "bold" },
-    stepText: { fontSize: 16, fontWeight: "bold", marginHorizontal: 10 },
+    sortButtonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
     barContainer: {
         flexDirection: "row",
         alignItems: "flex-end",
-        height: MAX_BAR_HEIGHT,
         backgroundColor: "#E5E5EA",
         borderRadius: 12,
         paddingHorizontal: 10,
         paddingVertical: 10,
-        marginTop: 10,
-        justifyContent: "center",
-        flexWrap: "wrap",
     },
-    barNumber: { fontSize: 12, marginTop: 4, textAlign: "center" },
-    scroll: { marginTop: 20, paddingHorizontal: 10 },
-    stepContainer: {
-        flexDirection: "row",
-        alignItems: "flex-end",
+    barNumber: {
+        marginTop: 4,
+        fontSize: 14,
+        color: "#1C1C1E",
+        fontWeight: "bold",
+    },
+    inputSection: {
+        width: "90%",
+        marginTop: 20,
+        alignItems: "center",
+    },
+    inputLabel: {
+        fontSize: 16,
+        marginBottom: 8,
+        color: "#1C1C1E",
+    },
+    input: {
+        width: "100%",
+        borderWidth: 1,
+        borderColor: "#C7C7CC",
+        borderRadius: 8,
         paddingVertical: 10,
-        flexWrap: "wrap",
-        justifyContent: "center",
+        paddingHorizontal: 15,
+        fontSize: 16,
+        backgroundColor: "white",
     },
 });
-
