@@ -19,7 +19,7 @@ const LinearSearchPage = () => {
     const navigation = useNavigation();
 
     // user inputs
-    const [arrayInput, setArrayInput] = useState("10, 5, 8, 12, 3");
+    const [arrayInput, setArrayInput] = useState("10, 5, 12, 3 , 7, 6,8, 2, 9, 1, 4, 11");
     const [target, setTarget] = useState("8");
 
     // visualization
