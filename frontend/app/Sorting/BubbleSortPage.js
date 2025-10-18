@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { bubbleSort } from "../../services/sorting&searching/bubble";
+import { bubbleSort } from "../../services/sorting/bubble";
 
 const BubbleSortPage = () => {
     const navigation = useNavigation();

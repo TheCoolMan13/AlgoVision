@@ -2,8 +2,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import MainPage from './app/MainPage'; // use same name for clarity
+
 import SortingMainPage from './app/Sorting/SortingMainPage';
-import DataStructureVisualsMainPage from './app/DataStructureVisuals/DataStructureVisualsMainPage'; 
+import DataStructureVisualsMainPage from './app/DataStructureVisuals/DataStructureVisualsMainPage';
 import GraphnPathfindingMainPage from './app/GraphnPathfinding/GraphnPathfindingMainPage';
 import SearchingMainPage from './app/Searching/SearchingMainPage';
 import RecursionMainPage from './app/Recursion/RecursionMainPage';
@@ -15,6 +16,8 @@ import BubbleSortPage from './app/Sorting/BubbleSortPage'
 import MergeSortPage from './app/Sorting/MergeSortPage'
 
 
+import LinearSearchPage from './app/Searching/LinearSearchPage';
+import BinarySearchPage from './app/Searching/BinarySearchPage';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +33,8 @@ const App = () => {
         <Stack.Screen name="GraphnPathfindingMainPage" component={GraphnPathfindingMainPage} options={{ headerShown: false }} />
         <Stack.Screen name="SearchingMainPage" component={SearchingMainPage} options={{ headerShown: false }} />
         <Stack.Screen name="RecursionMainPage" component={RecursionMainPage} options={{ headerShown: false }} />
+        <Stack.Screen name="LinearSearchPage" component={LinearSearchPage} options={{ headerShown: false }} />
+        <Stack.Screen name="BinarySearchPage" component={BinarySearchPage} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
