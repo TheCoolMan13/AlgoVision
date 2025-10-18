@@ -14,6 +14,9 @@ import RecursionMainPage from './app/Recursion/RecursionMainPage';
 
 import BubbleSortPage from './app/Sorting/BubbleSortPage'
 import MergeSortPage from './app/Sorting/MergeSortPage'
+import QuickSortPage from './app/Sorting/QuickSortPage'
+import HeapSortPage from './app/Sorting/HeapSortPage'
+import InsertionSortPage from './app/Sorting/InsertionSortPage'
 
 
 import LinearSearchPage from './app/Searching/LinearSearchPage';
@@ -35,6 +38,9 @@ const App = () => {
         <Stack.Screen name="RecursionMainPage" component={RecursionMainPage} options={{ headerShown: false }} />
         <Stack.Screen name="LinearSearchPage" component={LinearSearchPage} options={{ headerShown: false }} />
         <Stack.Screen name="BinarySearchPage" component={BinarySearchPage} options={{ headerShown: false }} />
+        <Stack.Screen name="QuickSortPage" component={QuickSortPage} options={{ headerShown: false }} />
+        <Stack.Screen name="HeapSortPage" component={HeapSortPage} options={{ headerShown: false }} />
+        <Stack.Screen name="InsertionSortPage" component={InsertionSortPage} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
