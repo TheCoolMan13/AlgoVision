@@ -89,7 +89,7 @@ const InsertionSortPage = () => {
             </View>
 
             {/* Input Section */}
-            <View style={styles.inputSection}>
+            <View style=    {styles.inputSection}>
                 <Text style={styles.inputLabel}>Enter numbers (comma separated):</Text>
                 <TextInput
                     style={styles.input}

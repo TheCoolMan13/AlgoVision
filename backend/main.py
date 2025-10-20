@@ -69,3 +69,21 @@ def search_binary(req: SortRequest, target: int):
     return {"frames": frames}
 
 
+@app.post("/searching/jump_search")
+def search_jump(req: SortRequest, target: int):
+    from algorithms.searching.jump_search import jump_search
+    frames = list(jump_search(req.array, target))
+    return {"frames": frames}
+
+
+@app.post("/searching/interpolation_search")
+def search_interpolation(req: SortRequest, target: int):
+    from algorithms.searching.interpolation_search import interpolation_search
+    frames = list(interpolation_search(req.array, target))
+    return {"frames": frames}
+
+@app.post("/searching/exponential_search")
+def search_exponential(req: SortRequest, target: int):
+    from algorithms.searching.exponential_search import exponential_search
+    frames = list(exponential_search(req.array, target))
+    return {"frames": frames}

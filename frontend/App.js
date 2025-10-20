@@ -3,24 +3,25 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import MainPage from './app/MainPage'; // use same name for clarity
 
-import SortingMainPage from './app/Sorting/SortingMainPage';
 import DataStructureVisualsMainPage from './app/DataStructureVisuals/DataStructureVisualsMainPage';
 import GraphnPathfindingMainPage from './app/GraphnPathfinding/GraphnPathfindingMainPage';
-import SearchingMainPage from './app/Searching/SearchingMainPage';
 import RecursionMainPage from './app/Recursion/RecursionMainPage';
+import SearchingMainPage from './app/Searching/SearchingMainPage';
+import SortingMainPage from './app/Sorting/SortingMainPage';
 
 
 
 
-import BubbleSortPage from './app/Sorting/BubbleSortPage'
-import MergeSortPage from './app/Sorting/MergeSortPage'
-import QuickSortPage from './app/Sorting/QuickSortPage'
-import HeapSortPage from './app/Sorting/HeapSortPage'
-import InsertionSortPage from './app/Sorting/InsertionSortPage'
+import BubbleSortPage from './app/Sorting/BubbleSortPage';
+import HeapSortPage from './app/Sorting/HeapSortPage';
+import InsertionSortPage from './app/Sorting/InsertionSortPage';
+import MergeSortPage from './app/Sorting/MergeSortPage';
+import QuickSortPage from './app/Sorting/QuickSortPage';
 
 
-import LinearSearchPage from './app/Searching/LinearSearchPage';
 import BinarySearchPage from './app/Searching/BinarySearchPage';
+import JumpSearchPage from './app/Searching/JumpSearchPage';
+import LinearSearchPage from './app/Searching/LinearSearchPage';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,7 @@ const App = () => {
         <Stack.Screen name="QuickSortPage" component={QuickSortPage} options={{ headerShown: false }} />
         <Stack.Screen name="HeapSortPage" component={HeapSortPage} options={{ headerShown: false }} />
         <Stack.Screen name="InsertionSortPage" component={InsertionSortPage} options={{ headerShown: false }} />
+        <Stack.Screen name="JumpSearchPage" component={JumpSearchPage} options={{ headerShown: false }}  />
       </Stack.Navigator>
     </NavigationContainer>
   );
